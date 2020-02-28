@@ -88,3 +88,52 @@ ElementType Pop(Stack S)
 - 利用求余函数来实现循环
 ### 队列的链式存储
 - 链表头做删除操作，链表尾做插入操作
+## 串【只能存储字符】
+### 串的顺序存储结构【用得更多】
+```c
+#define MAXLEN 255
+typedef struct{
+    char ch[MAXLEN+1];
+    /*存储串的一维数组
+    一般ch[0]不放字符，从ch[1]开始放*/
+    int length;//串得当前长度
+}
+```
+### 串的链式存储结构——块链
+```c
+#define CHUNKSIZE 80 //块的大小可由用户定义
+typedef struct Chunk{
+    char ch[CHUNKSIZE];
+    struct Chunk *next;
+}Chunk;
+
+typedef struct{
+    Chunk *head,*tail;//串的头指针和尾指针
+    int curlen;//串的当前长度
+}LString;//字符串的块链结构
+```
+### 串的模式匹配算法
+- 算法目的：确定主串中所含子串（模式串）第一次出现的位置（定位）
+- 算法应用：搜索引擎，拼写检查
+- 算法种类：1.BF算法（暴力破解） 2.KMP算法（速度快）
+```c
+int Index_BF(SString S,SString T,int pos){
+    int i=pos,j=1;//pos表示从某处开始进行查找
+    while(i<=S.length && j>=T.length){
+        if(S.ch[i]==T.ch[j])
+        {
+            i++;
+            j++;
+        }//主串和子串依次匹配下一个字符
+        else
+        {
+            i=i-j+2;//主串的回溯【画图可知】
+            j=1
+        }//主串，子串指针回溯重新开始下依次匹配
+    }
+    if(j>=T.length)
+    return i-T.length;//返回匹配的第一个字符下标
+    else
+    return 0;//模式匹配不成功
+}
+```
